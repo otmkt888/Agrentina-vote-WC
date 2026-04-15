@@ -1559,9 +1559,9 @@
         }
 
         function sendToGoogleSheets(data) {
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwwh1bb3gcdIBG-5NSjM-AFS5ucAoMUOTW0Ki-keK___HoTqCIwWPTil1JFGQHK1FHa/exec';
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWtZba42Vi0V_MRuQcOxV5kD5rbcupV01ghdouzvawJuJ1OD2e-4P2z7LVYMK1kw/exec';
             
-            if (GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwwh1bb3gcdIBG-5NSjM-AFS5ucAoMUOTW0Ki-keK___HoTqCIwWPTil1JFGQHK1FHa/exec') {
+            if (GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxWtZba42Vi0V_MRuQcOxV5kD5rbcupV01ghdouzvawJuJ1OD2e-4P2z7LVYMK1kw/exec') {
                 console.log('📊 投票數據 (尚未連接Google Sheets):', data);
                 const existingData = JSON.parse(localStorage.getItem('voteData') || '[]');
                 existingData.push(data);
