@@ -261,7 +261,7 @@
 
         /* 表單區域 */
         .form-section {
-            padding: 50px 20px;
+            padding: 40px 20px 50px;
             background: linear-gradient(180deg, 
                 var(--bg-primary) 0%, 
                 var(--bg-secondary) 100%);
@@ -274,7 +274,7 @@
             font-weight: 400;
             letter-spacing: 3px;
             color: var(--text-primary);
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             text-transform: uppercase;
             position: relative;
         }
@@ -291,12 +291,15 @@
             box-shadow: var(--glow-gold);
         }
 
-        /* 選項按鈕 - 運動卡片風格 */
+        /* 選項網格 - 優化為緊湊布局 */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            margin-bottom: 40px;
+            gap: 12px;
+            margin-bottom: 30px;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .option-btn {
@@ -305,12 +308,17 @@
                 rgba(15, 23, 42, 0.6) 100%);
             border: 2px solid rgba(117, 170, 219, 0.3);
             border-radius: 16px;
-            padding: 28px 20px;
+            padding: 20px 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .option-btn::before {
@@ -374,6 +382,14 @@
             letter-spacing: 2px;
             color: #FFFFFF;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 12px;
+            color: rgba(226, 232, 240, 0.7);
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
         /* 提交按鈕 - 行動號召 */
@@ -835,15 +851,20 @@
             }
 
             .option-btn {
-                padding: 24px 15px;
+                padding: 18px 12px;
+                min-height: 100px;
             }
 
             .option-icon {
-                font-size: 36px;
+                font-size: 32px;
             }
 
             .option-text {
                 font-size: 22px;
+            }
+
+            .option-desc {
+                font-size: 11px;
             }
 
             .submit-btn {
@@ -1327,26 +1348,45 @@
             <div class="form-section">
                 <h2 class="section-title">立即参与预测</h2>
                 
+                <!-- 添加說明文字 -->
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <p style="color: rgba(226, 232, 240, 0.8); font-size: 15px; line-height: 1.6; max-width: 380px; margin: 0 auto;">
+                        選擇你認為阿根廷在2026世界盃的最終成績
+                    </p>
+                </div>
+                
                 <div class="options-grid">
                     <div class="option-btn" data-value="champion">
                         <div class="option-icon">🏆</div>
                         <div class="option-text">冠军</div>
+                        <div class="option-desc">卫冕成功</div>
                     </div>
                     <div class="option-btn" data-value="semifinal">
                         <div class="option-icon">🥈</div>
                         <div class="option-text">4强</div>
+                        <div class="option-desc">半决赛</div>
                     </div>
                     <div class="option-btn" data-value="quarterfinal">
                         <div class="option-icon">🥉</div>
                         <div class="option-text">8强</div>
+                        <div class="option-desc">四分之一决赛</div>
                     </div>
                     <div class="option-btn" data-value="round16">
                         <div class="option-icon">⚽</div>
                         <div class="option-text">16强</div>
+                        <div class="option-desc">十六强淘汰赛</div>
                     </div>
                 </div>
 
                 <button class="submit-btn" id="submitBtn" disabled>立即参与竞猜</button>
+
+                <!-- 參與人數提示 -->
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: rgba(255, 215, 0, 0.8); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span style="display: inline-block; width: 8px; height: 8px; background: #FFD700; border-radius: 50%; animation: pulse 2s infinite;"></span>
+                        已有 <span id="fakeParticipants" style="color: #FFD700; font-family: 'Bebas Neue', sans-serif; font-size: 18px; margin: 0 4px;">128,475</span> 人參與預測
+                    </p>
+                </div>
 
                 <!-- 促銷 Banner -->
                 <a href="https://www.12bet.com/" target="_blank" class="promo-banner">
@@ -1488,9 +1528,9 @@
         }
 
         function sendToGoogleSheets(data) {
-            const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDTToSGIwo881s8VKCdfnmRKpy4fJhwFtY7Ysa-x2p2MRtR3MB5unO8sAZxVqtjNHH/exec';
             
-            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+            if (GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyDTToSGIwo881s8VKCdfnmRKpy4fJhwFtY7Ysa-x2p2MRtR3MB5unO8sAZxVqtjNHH/exec') {
                 console.log('📊 投票數據 (尚未連接Google Sheets):', data);
                 const existingData = JSON.parse(localStorage.getItem('voteData') || '[]');
                 existingData.push(data);
@@ -1656,7 +1696,22 @@
             startConfettiRain();
             createFloatingDots();
             initCursorGlow();
+            animateParticipantCount();
         });
+
+        // 參與人數跳動動畫
+        function animateParticipantCount() {
+            const participantElement = document.getElementById('fakeParticipants');
+            if (!participantElement) return;
+            
+            const baseCount = 128475;
+            
+            setInterval(() => {
+                const randomIncrease = Math.floor(Math.random() * 5) + 1;
+                const newCount = baseCount + randomIncrease;
+                participantElement.textContent = newCount.toLocaleString();
+            }, 5000);
+        }
 
         // 鼠標光暈跟隨
         function initCursorGlow() {
