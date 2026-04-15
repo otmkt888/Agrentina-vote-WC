@@ -1,0 +1,192 @@
+# Google Sheets 投票數據收集設置教學
+
+## 📊 這個功能會收集什麼數據？
+
+每次用戶投票時，系統會自動記錄：
+1. ✅ 投票選項（冠軍/4強/8強/16強）
+2. ✅ 投票時間（精確到毫秒）
+3. ✅ 裝置資訊（手機/電腦/平板）
+4. ✅ 瀏覽器類型
+5. ✅ 螢幕解析度
+6. ✅ 語言設定
+7. ✅ 時區
+8. ✅ 來源頁面
+
+---
+
+## 🚀 設置步驟（5分鐘完成）
+
+### 步驟 1：創建 Google 試算表
+
+1. 前往 https://sheets.google.com
+2. 點擊「+」創建新試算表
+3. 命名為「阿根廷投票數據」
+4. 在第一行輸入以下標題（A1到J1）：
+
+```
+時間 | 投票選項 | 選項代碼 | 瀏覽器 | 平台 | 語言 | 螢幕解析度 | 視窗大小 | 時區 | 來源
+```
+
+---
+
+### 步驟 2：創建 Google Apps Script
+
+1. 在試算表中，點擊「擴充功能」→「Apps Script」
+2. 刪除預設代碼，貼上以下代碼：
+
+```javascript
+function doPost(e) {
+  try {
+    // 獲取當前試算表
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // 解析接收到的數據
+    const data = JSON.parse(e.postData.contents);
+    
+    // 準備要寫入的數據行
+    const row = [
+      data.timestamp,
+      data.vote,
+      data.voteValue,
+      data.userAgent,
+      data.platform,
+      data.language,
+      data.screenResolution,
+      data.viewport,
+      data.timezone,
+      data.referrer
+    ];
+    
+    // 寫入新的一行
+    sheet.appendRow(row);
+    
+    // 返回成功
+    return ContentService.createTextOutput(JSON.stringify({
+      'status': 'success',
+      'message': '數據已記錄'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch(error) {
+    // 返回錯誤
+    return ContentService.createTextOutput(JSON.stringify({
+      'status': 'error',
+      'message': error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+```
+
+3. 點擊「部署」→「新增部署作業」
+4. 選擇類型：「網頁應用程式」
+5. 設定：
+   - 執行身分：**我**
+   - 具有存取權的使用者：**所有人**
+6. 點擊「部署」
+7. **複製 Web App URL**（非常重要！）
+
+---
+
+### 步驟 3：將 URL 加入 HTML
+
+1. 打開 `index.html`
+2. 找到這一行（大約在第 630 行）：
+```javascript
+const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+```
+
+3. 替換為你的 URL：
+```javascript
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/你的ID/exec';
+```
+
+4. 儲存檔案
+
+---
+
+## ✅ 測試是否成功
+
+1. 打開你的落地頁
+2. 按 F12 打開開發者工具
+3. 切換到「Console」分頁
+4. 進行一次投票
+5. 查看 Console 訊息：
+   - ✅ 看到「投票數據已發送到 Google Sheets」→ 成功！
+   - ❌ 看到「數據已暫存到瀏覽器」→ URL 還沒設置
+6. 回到 Google Sheets 檢查是否有新的一行數據
+
+---
+
+## 📈 數據分析範例
+
+設置完成後，你可以在 Google Sheets 中：
+
+### 基本統計
+```
+=COUNTIF(B:B, "冠軍")     // 統計投「冠軍」的人數
+=COUNTIF(B:B, "4強")      // 統計投「4強」的人數
+```
+
+### 按時段分析
+```
+=COUNTIFS(A:A, ">2026-04-15", B:B, "冠軍")  // 特定日期後投冠軍的人數
+```
+
+### 裝置分布
+```
+=COUNTIF(E:E, "*Mobile*")    // 手機用戶數量
+=COUNTIF(E:E, "*Windows*")   // 電腦用戶數量
+```
+
+---
+
+## 🔒 隱私說明
+
+收集的數據：
+- ✅ 不包含個人身分資訊
+- ✅ 不包含 Email 或電話
+- ✅ 僅用於匿名統計分析
+- ✅ 符合 GDPR 基本要求
+
+---
+
+## 🆘 常見問題
+
+**Q: 數據沒有記錄到 Google Sheets？**
+A: 檢查：
+1. Apps Script URL 是否正確貼上
+2. 部署時是否選擇「所有人」可存取
+3. 打開瀏覽器 Console 查看錯誤訊息
+
+**Q: 可以匯出數據嗎？**
+A: 可以！Google Sheets 可以匯出為：
+- Excel (.xlsx)
+- CSV (.csv)  
+- PDF
+
+**Q: 數據會被其他人看到嗎？**
+A: 不會，只有你能看到 Google Sheets 的內容
+
+**Q: 沒有設置 URL 會怎樣？**
+A: 數據會暫存在用戶的瀏覽器 localStorage 中，你可以在 Console 查看
+
+---
+
+## 💡 進階功能
+
+設置完成後，你還可以：
+
+1. **設置自動報表**
+   - 使用 Google Data Studio 製作即時儀表板
+
+2. **設置提醒**
+   - 當投票數達到特定數量時發送 Email
+
+3. **數據備份**
+   - 設置每日自動備份到 Google Drive
+
+4. **API 整合**
+   - 將數據同步到你的其他系統
+
+---
+
+需要幫助？查看完整文檔或聯繫技術支援！
